@@ -41,13 +41,13 @@ namespace ProAgil.Repository
             .Include(c => c.RedesSociais);
 
             if(includePalestrantes)
-            {
+            {   
                 query = query
                     .Include(pe => pe.PalestrantesEventos)
                     .ThenInclude(p => p.Palestrante);
             }
             query = query.AsNoTracking()
-            .OrderByDescending(c => c.DataEvento);
+            .OrderBy(c => c.Id);
             return await query.ToArrayAsync();
 
         }
