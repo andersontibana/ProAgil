@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {HttpClientModule } from "@angular/common/http"
+import {HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http"
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -23,8 +23,13 @@ import { TituloComponent } from './_shared/titulo/titulo.component';
 
 import { EventoService } from './_services/evento.service';
 
+import { UserComponent } from './user/user.component';
+import { LoginComponent } from './user/login/login.component';
+import { RegistrationComponent } from './user/registration/registration.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
+
 @NgModule({
-  declarations: [						
+  declarations: [							
     AppComponent,
     NavComponent,
     EventosComponent,
@@ -32,6 +37,9 @@ import { EventoService } from './_services/evento.service';
     DateTimeFormatPipePipe,
     ContatosComponent,
     DashboardComponent,
+    UserComponent,
+    LoginComponent,
+    RegistrationComponent,
     TituloComponent
    ],
   imports: [
@@ -54,7 +62,12 @@ import { EventoService } from './_services/evento.service';
     
   ],
   providers: [
-    EventoService
+    EventoService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
