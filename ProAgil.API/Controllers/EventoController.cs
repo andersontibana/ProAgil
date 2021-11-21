@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -68,15 +69,18 @@ namespace ProAgil.API.Controllers
         [HttpGet("{EventoId}")]
         public async Task<IActionResult> Get(int EventoId)
         {
-            try{
+            try
+            {
                 var evento = await _repo.GetAllEventoAsyncById(EventoId, true);
+
                 var results = _mapper.Map<EventoDto>(evento);
+
                 return Ok(results);
             }
-            catch(System.Exception){
-                return this.StatusCode(500, "Banco de dados falhou.");
+            catch (System.Exception)
+            {
+                return this.StatusCode(500, "Banco Dados Falhou");
             }
-        
         }
 
         [HttpGet("getByTema/{tema}")]
@@ -113,9 +117,29 @@ namespace ProAgil.API.Controllers
         [HttpPut("{EventoId}")]
         public async Task<IActionResult> Put(int EventoId, EventoDto model)
         {
+
             try{
+                var idLotes = new List<int>();
+                var idRedesSociais = new List<int>();
+
+                model.Lotes.ForEach(item => idLotes.Add(item.Id));
+                model.RedesSociais.ForEach(item => idRedesSociais.Add(item.Id));
+                
                 var evento = await _repo.GetAllEventoAsyncById(EventoId, false);
                 if(evento == null) return NotFound();
+
+                var lotes = evento.Lotes.Where(
+                    lote => !idLotes.Contains(lote.Id))
+                    .ToArray<Lote>();
+                var redesSociais = evento.RedesSociais.Where(
+                    rede => !idRedesSociais.Contains(rede.Id))
+                    .ToArray<RedeSocial>();
+
+                if(lotes.Length > 0) _repo.DeleteRange(lotes);
+
+                if(redesSociais.Length > 0) _repo.DeleteRange(redesSociais);
+                
+
                 _mapper.Map(model, evento);
 
                 _repo.Update(evento);

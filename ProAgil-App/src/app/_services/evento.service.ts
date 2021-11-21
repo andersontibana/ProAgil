@@ -37,6 +37,13 @@ export class EventoService {
   }
 
   putEvento(evento: Evento) {
+    /*console.log(typeof(evento.lotes[0].id), "id")
+    console.log(typeof(evento.lotes[0].nome), "nome")
+    console.log(typeof(evento.lotes[0].preco), "preco" )
+    console.log(typeof(evento.lotes[0].quantidade), "quantidade")
+    console.log(typeof(evento.lotes[0].dataInicio), "data inicio")
+    console.log(typeof(evento.lotes[0].dataFim), "data fim")*/
+
     return this.http.put(`${this.baseUrl}/${evento.id}`, evento);
   }
 
