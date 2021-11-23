@@ -9,7 +9,7 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-
+  flag = true;
   constructor(public authService : AuthService,
     public router : Router,
     private toastr: ToastrService) { }
@@ -19,6 +19,12 @@ export class NavComponent implements OnInit {
 
   loggedIn(){
     return this.authService.loggedIn();
+  }
+
+  showMenu(){
+    if(this.router.url !== '/user/login')
+      return true
+    return false
   }
 
   logout(){
